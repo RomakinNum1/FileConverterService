@@ -1,23 +1,120 @@
 import com.google.gson.stream.JsonWriter;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+import org.w3c.dom.Node;
+import org.xembly.Directives;
+import org.xembly.ImpossibleModificationException;
+import org.xembly.SyntaxException;
+import org.xembly.Xembler;
 import org.xml.sax.SAXException;
 
+import java.io.File;
+import java.io.IOException;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 import javax.management.modelmbean.XMLParseException;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
-import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 
 public class main {
-    public static void main(String[] args) throws IOException, ParserConfigurationException, SAXException, XMLStreamException, XMLParseException {
-        ArrayList<Building>result = openXml("E:\\Работа\\Практика\\FileConverterService\\films.xml");
-        saveJson("E:\\Работа\\Практика\\FileConverterService", result, "test.json");
+    public static void main(String[] args) throws IOException, ParserConfigurationException, SAXException, XMLStreamException, XMLParseException, ParseException, ImpossibleModificationException, SyntaxException, TransformerException {
+        /*ArrayList<Building>result = openXml("E:\\Работа\\Практика\\FileConverterService\\films.xml");
+        saveJson("E:\\Работа\\Практика\\FileConverterService", result, "test.json");*/
 
+        ArrayList<Building>result = openJson("E:\\Работа\\Практика\\FileConverterService\\test.json");
+        saveXml("E:\\Работа\\Практика\\FileConverterService", result, "test1.xml");
+    }
+
+    private static void saveXml(String path, ArrayList<Building> arrayList, String name) throws ParserConfigurationException, SyntaxException, ImpossibleModificationException, TransformerException {
+        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder dbuilder = dbFactory.newDocumentBuilder();
+
+        // 2. Create a Document from the above DocumentBuilder.
+        Document document = dbuilder.newDocument();
+
+        // 3. Create the elements you want using the Element class and its appendChild method.
+
+        // root element
+        Element users = document.createElement("buildings");
+        document.appendChild(users);
+        for (Building b:arrayList) {
+            // child element
+            Element user = document.createElement("building");
+            users.appendChild(user);
+
+            Element nameBuild = document.createElement("name");
+            nameBuild.appendChild(document.createTextNode(b.name));
+            user.appendChild(nameBuild);
+
+            Element films = document.createElement("films");
+            for (String film:b.films) {
+                Element filmchild = document.createElement("film");
+                filmchild.appendChild(document.createTextNode(film));
+                films.appendChild(filmchild);
+            }
+            user.appendChild(films);
+        }
+
+        // 4. Create a new Transformer instance and a new DOMSource instance.
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        Transformer transformer = transformerFactory.newTransformer();
+        DOMSource source = new DOMSource(document);
+
+        // 5. Create a new StreamResult to the output stream you want to use.
+        StreamResult result = new StreamResult(new File(path + "\\" + name));
+        // StreamResult result = new StreamResult(System.out); // to print on console
+
+        // 6. Use transform method to write the DOM object to the output stream.
+        transformer.transform(source, result);
+    }
+
+    static private ArrayList<Building> openJson(String path) throws IOException, ParseException {
+        JSONParser parser = new JSONParser();
+        JSONArray jsonBuild = (JSONArray)(((JSONObject)parser.parse(new FileReader(path))).get("buildings"));
+        ArrayList<Building> buildings = new ArrayList<>();
+
+        for (Object obj : jsonBuild) {
+            JSONObject jsonObject = (JSONObject)((JSONObject)obj).get("building");
+            Building building = new Building();
+            building.name = ((String)jsonObject.get("name"));
+            building.films.addAll(getFilms(jsonObject));
+
+            buildings.add(building);
+        }
+
+        return buildings;
+    }
+
+    static private ArrayList<String> getFilms(JSONObject jsonGenre) {
+        JSONArray jsonFilms = (JSONArray)jsonGenre.get("films");
+        ArrayList<String> musicBands = new ArrayList<>();
+
+        for (Object film : jsonFilms) {
+            JSONObject jsonObject = (JSONObject)film;
+
+            musicBands.add((String)jsonObject.get("film"));
+        }
+
+        return musicBands;
     }
 
     private static void saveJson(String path, ArrayList<Building> result, String name) throws IOException {
@@ -53,22 +150,6 @@ public class main {
         jsonWriter.endObject();
         jsonWriter.close();
     }
-    /*jsonWriter.beginObject();
-            jsonWriter.name("building");
-            jsonWriter.beginObject();
-            jsonWriter.name("name");
-            jsonWriter.value(b.name);
-            jsonWriter.endObject();
-            jsonWriter.beginObject();
-            jsonWriter.name("films");
-            jsonWriter.beginArray();
-            for (String film:b.films) {
-        jsonWriter.name("film");
-        jsonWriter.value(film);
-    }
-            jsonWriter.endObject();
-            jsonWriter.endArray();
-            jsonWriter.endObject();*/
 
     private static ArrayList<Building> openXml(String path) throws IOException, XMLStreamException, XMLParseException {
         ArrayList<Building> buildings = new ArrayList<>();
