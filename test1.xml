@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<buildings>
+    <building>
+        <name>JamMool</name>
+        <films>
+            <film>Venom</film>
+            <film>Venom 2</film>
+            <film>Batman</film>
+            <film>Batman 2</film>
+        </films>
+    </building>
+    <building>
+        <name>Kolisey</name>
+        <films>
+            <film>Sprava</film>
+            <film>Venom 2</film>
+            <film>Batman</film>
+            <film>Zavtra</film>
+        </films>
+    </building>
+</buildings>

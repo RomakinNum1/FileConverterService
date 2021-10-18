@@ -3,12 +3,8 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.w3c.dom.Node;
-import org.xembly.Directives;
 import org.xembly.ImpossibleModificationException;
 import org.xembly.SyntaxException;
-import org.xembly.Xembler;
-import org.xml.sax.SAXException;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,17 +12,15 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import javax.management.modelmbean.XMLParseException;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -36,15 +30,20 @@ import java.io.*;
 import java.util.ArrayList;
 
 public class main {
-    public static void main(String[] args) throws IOException, ParserConfigurationException, SAXException, XMLStreamException, XMLParseException, ParseException, ImpossibleModificationException, SyntaxException, TransformerException {
-        /*ArrayList<Building>result = openXml("E:\\Работа\\Практика\\FileConverterService\\films.xml");
-        saveJson("E:\\Работа\\Практика\\FileConverterService", result, "test.json");*/
-
-        ArrayList<Building>result = openJson("E:\\Работа\\Практика\\FileConverterService\\test.json");
-        saveXml("E:\\Работа\\Практика\\FileConverterService", result, "test1.xml");
+    public static void main(String[] args) throws IOException, ParserConfigurationException, XMLStreamException, XMLParseException, ParseException, ImpossibleModificationException, SyntaxException, TransformerException {
+        if (args[0].substring(args[0].lastIndexOf('.')).equals(".xml") && args[1].substring(args[1].lastIndexOf('.')).equals(".json")) {
+            ArrayList<Building> result = openXml(args[0]);
+            saveJson(args[1], result);
+        }
+        else if(args[0].substring(args[0].lastIndexOf('.')).equals(".json") && args[1].substring(args[1].lastIndexOf('.')).equals(".xml"))
+        {
+            ArrayList<Building> result = openJson(args[0]);
+            saveXml(args[1], result);
+        }
+        System.out.println("Файл " + args[1] + " создан");
     }
 
-    private static void saveXml(String path, ArrayList<Building> arrayList, String name) throws ParserConfigurationException, SyntaxException, ImpossibleModificationException, TransformerException {
+    private static void saveXml(String path, ArrayList<Building> arrayList) throws ParserConfigurationException, SyntaxException, ImpossibleModificationException, TransformerException {
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dbuilder = dbFactory.newDocumentBuilder();
 
@@ -56,7 +55,7 @@ public class main {
         // root element
         Element users = document.createElement("buildings");
         document.appendChild(users);
-        for (Building b:arrayList) {
+        for (Building b : arrayList) {
             // child element
             Element user = document.createElement("building");
             users.appendChild(user);
@@ -66,7 +65,7 @@ public class main {
             user.appendChild(nameBuild);
 
             Element films = document.createElement("films");
-            for (String film:b.films) {
+            for (String film : b.films) {
                 Element filmchild = document.createElement("film");
                 filmchild.appendChild(document.createTextNode(film));
                 films.appendChild(filmchild);
@@ -80,7 +79,7 @@ public class main {
         DOMSource source = new DOMSource(document);
 
         // 5. Create a new StreamResult to the output stream you want to use.
-        StreamResult result = new StreamResult(new File(path + "\\" + name));
+        StreamResult result = new StreamResult(new File(path));
         // StreamResult result = new StreamResult(System.out); // to print on console
 
         // 6. Use transform method to write the DOM object to the output stream.
@@ -89,13 +88,13 @@ public class main {
 
     static private ArrayList<Building> openJson(String path) throws IOException, ParseException {
         JSONParser parser = new JSONParser();
-        JSONArray jsonBuild = (JSONArray)(((JSONObject)parser.parse(new FileReader(path))).get("buildings"));
+        JSONArray jsonBuild = (JSONArray) (((JSONObject) parser.parse(new FileReader(path))).get("buildings"));
         ArrayList<Building> buildings = new ArrayList<>();
 
         for (Object obj : jsonBuild) {
-            JSONObject jsonObject = (JSONObject)((JSONObject)obj).get("building");
+            JSONObject jsonObject = (JSONObject) ((JSONObject) obj).get("building");
             Building building = new Building();
-            building.name = ((String)jsonObject.get("name"));
+            building.name = ((String) jsonObject.get("name"));
             building.films.addAll(getFilms(jsonObject));
 
             buildings.add(building);
@@ -105,24 +104,24 @@ public class main {
     }
 
     static private ArrayList<String> getFilms(JSONObject jsonGenre) {
-        JSONArray jsonFilms = (JSONArray)jsonGenre.get("films");
+        JSONArray jsonFilms = (JSONArray) jsonGenre.get("films");
         ArrayList<String> musicBands = new ArrayList<>();
 
         for (Object film : jsonFilms) {
-            JSONObject jsonObject = (JSONObject)film;
+            JSONObject jsonObject = (JSONObject) film;
 
-            musicBands.add((String)jsonObject.get("film"));
+            musicBands.add((String) jsonObject.get("film"));
         }
 
         return musicBands;
     }
 
-    private static void saveJson(String path, ArrayList<Building> result, String name) throws IOException {
-        JsonWriter jsonWriter = new JsonWriter(new FileWriter(path + "\\" + name));
+    private static void saveJson(String path, ArrayList<Building> result) throws IOException {
+        JsonWriter jsonWriter = new JsonWriter(new FileWriter(path));
         jsonWriter.beginObject();
         jsonWriter.name("buildings");
         jsonWriter.beginArray();
-        for (Building b:result) {
+        for (Building b : result) {
             jsonWriter.beginObject();
             jsonWriter.name("building");
 
@@ -133,7 +132,7 @@ public class main {
             jsonWriter.name("films");
             jsonWriter.beginArray();
 
-            for (String film:b.films) {
+            for (String film : b.films) {
                 jsonWriter.beginObject();
                 jsonWriter.name("film");
                 jsonWriter.value(film);
@@ -162,8 +161,7 @@ public class main {
             xmlEvent = reader.nextEvent();
         }
 
-        while (!xmlEvent.isEndElement() || !xmlEvent.asEndElement().getName().getLocalPart().equals("buildings"))
-        {
+        while (!xmlEvent.isEndElement() || !xmlEvent.asEndElement().getName().getLocalPart().equals("buildings")) {
             xmlEvent = reader.nextEvent();
             if (xmlEvent.isStartElement()) {
                 StartElement startElement = xmlEvent.asStartElement();
@@ -187,12 +185,9 @@ public class main {
                 StartElement startElement = xmlEvent.asStartElement();
                 String tagName = startElement.getName().getLocalPart();
 
-                if(tagName.equals("name"))
-                {
+                if (tagName.equals("name")) {
                     building.name = (reader.nextEvent().asCharacters().getData());
-                }
-                else if(tagName.equals("films"))
-                {
+                } else if (tagName.equals("films")) {
                     building.films.addAll(getFilms(xmlEvent, reader));
                 }
             }
