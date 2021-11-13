@@ -29,7 +29,7 @@ import javax.xml.stream.events.XMLEvent;
 import java.io.*;
 import java.util.ArrayList;
 
-public class main {
+public class main {//
     public static void main(String[] args) throws IOException, ParserConfigurationException, XMLStreamException, XMLParseException, ParseException, ImpossibleModificationException, SyntaxException, TransformerException {
         if (args[0].substring(args[0].lastIndexOf('.')).equals(".xml") && args[1].substring(args[1].lastIndexOf('.')).equals(".json")) {
             ArrayList<Building> result = openXml(args[0]);
