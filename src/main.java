@@ -53,24 +53,23 @@ public class main {
         // 3. Create the elements you want using the Element class and its appendChild method.
 
         // root element
-        Element users = document.createElement("buildings");
-        document.appendChild(users);
+        Element filmsMain = document.createElement("films");
+        document.appendChild(filmsMain);
         for (Building b : arrayList) {
             // child element
-            Element user = document.createElement("building");
-            users.appendChild(user);
 
-            Element nameBuild = document.createElement("name");
-            nameBuild.appendChild(document.createTextNode(b.name));
-            user.appendChild(nameBuild);
-
-            Element films = document.createElement("films");
             for (String film : b.films) {
-                Element filmchild = document.createElement("film");
-                filmchild.appendChild(document.createTextNode(film));
-                films.appendChild(filmchild);
+                Element filmChild = document.createElement("film");
+                filmsMain.appendChild(filmChild);
+
+                Element filmName = document.createElement("name");
+                filmName.appendChild(document.createTextNode(film));
+                filmChild.appendChild(filmName);
+
+                Element nameBuilb = document.createElement("building");
+                nameBuilb.appendChild(document.createTextNode(b.name));
+                filmChild.appendChild(nameBuilb);
             }
-            user.appendChild(films);
         }
 
         // 4. Create a new Transformer instance and a new DOMSource instance.
@@ -119,31 +118,23 @@ public class main {
     private static void saveJson(String path, ArrayList<Building> result) throws IOException {
         JsonWriter jsonWriter = new JsonWriter(new FileWriter(path));
         jsonWriter.beginObject();
-        jsonWriter.name("buildings");
+        jsonWriter.name("films");
         jsonWriter.beginArray();
         for (Building b : result) {
-            jsonWriter.beginObject();
-            jsonWriter.name("building");
-
-            jsonWriter.beginObject();
-            jsonWriter.name("name");
-            jsonWriter.value(b.name);
-
-            jsonWriter.name("films");
-            jsonWriter.beginArray();
-
             for (String film : b.films) {
                 jsonWriter.beginObject();
                 jsonWriter.name("film");
+
+                jsonWriter.beginObject();
+                jsonWriter.name("name");
                 jsonWriter.value(film);
+
+                jsonWriter.name("building");
+                jsonWriter.value(b.name);
+                jsonWriter.endObject();
+
                 jsonWriter.endObject();
             }
-
-            jsonWriter.endArray();
-
-            jsonWriter.endObject();
-
-            jsonWriter.endObject();
         }
         jsonWriter.endArray();
         jsonWriter.endObject();
