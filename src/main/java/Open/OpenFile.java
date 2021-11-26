@@ -10,5 +10,5 @@ import java.util.ArrayList;
 import java.util.List;
 
 public interface OpenFile {
-    List<Building> open();
+    List<Building> getData();
 }

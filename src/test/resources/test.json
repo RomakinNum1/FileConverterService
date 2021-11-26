@@ -1,0 +1,42 @@
+{
+  "buildings": [
+    {
+      "building": {
+        "name": "JamMool",
+        "films": [
+          {
+            "film": "Venom"
+          },
+          {
+            "film": "Venom 2"
+          },
+          {
+            "film": "Batman"
+          },
+          {
+            "film": "Batman 2"
+          }
+        ]
+      }
+    },
+    {
+      "building": {
+        "name": "Kolisey",
+        "films": [
+          {
+            "film": "Sprava"
+          },
+          {
+            "film": "Venom 2"
+          },
+          {
+            "film": "Batman"
+          },
+          {
+            "film": "Zavtra"
+          }
+        ]
+      }
+    }
+  ]
+}

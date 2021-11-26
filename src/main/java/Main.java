@@ -9,7 +9,7 @@ public final class Main {
     public static void main(String[] args) {
         OpenFile file = MainOpen.openFile(args[0]);
 
-        ArrayList<Building> buildings = new ArrayList<>(file.open());
+        ArrayList<Building> buildings = new ArrayList<>(file.getData());
 
         MainSave.saveFile(args[1]).save(buildings);
 

@@ -20,7 +20,7 @@ public final class Json implements OpenFile {
         path = _path;
     }
 
-    public List<Building> open() {
+    public List<Building> getData() {
         JSONArray jsonBuild = readFile();
 
         List<Building> buildings = new ArrayList<>();

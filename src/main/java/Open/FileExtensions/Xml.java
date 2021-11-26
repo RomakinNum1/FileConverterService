@@ -22,13 +22,18 @@ public final class Xml implements OpenFile {
         path = _path;
     }
 
-    public List<Building> open() {
+    public List<Building> getData(){
         List<Building> buildings = new ArrayList<>();
 
-        XMLEventReader reader = readFile();
-
+        XMLInputFactory factory = XMLInputFactory.newInstance();
+        XMLEventReader reader = null;
         XMLEvent xmlEvent;
-        try {
+
+        try (FileInputStream fileInputStream = new FileInputStream(path))  {
+            reader = factory.createXMLEventReader(fileInputStream);
+            xmlEvent = reader.nextEvent();
+
+
             xmlEvent = reader.nextEvent();
 
             if (reader.hasNext()) {
@@ -45,24 +50,11 @@ public final class Xml implements OpenFile {
                         buildings.add(getBuilding(reader));
                 }
             }
-        } catch (XMLStreamException e) {
+        } catch (XMLStreamException | IOException e) {
             e.printStackTrace();
         }
 
         return buildings;
-    }
-
-    private XMLEventReader readFile() {
-        XMLEventReader reader = null;
-
-        try (FileInputStream fileInputStream = new FileInputStream(path)) {
-            XMLInputFactory factory = XMLInputFactory.newInstance();
-            reader = factory.createXMLEventReader(fileInputStream);
-        } catch (IOException | XMLStreamException e) {
-            e.printStackTrace();
-        }
-
-        return reader;
     }
 
     private Building getBuilding(XMLEventReader reader) {
