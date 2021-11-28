@@ -11,12 +11,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class JsonReader implements FileReader {
-    private final String path;
-
-    public JsonReader(String path) {
-        this.path = path;
-    }
+public record JsonReader(String path) implements FileReader {
 
     public List<Building> getData() throws IOException, ParseException {
         JSONParser parser = new JSONParser();
