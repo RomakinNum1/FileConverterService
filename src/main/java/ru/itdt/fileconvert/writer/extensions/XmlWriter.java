@@ -16,12 +16,7 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.util.List;
 
-public final class XmlWriter implements FileWriter {
-    private final String path;
-
-    public XmlWriter(String _path) {
-        path = _path;
-    }
+public record XmlWriter(String path) implements FileWriter {
 
     public void save(List<Building> buildings) throws ParserConfigurationException, TransformerException {
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();

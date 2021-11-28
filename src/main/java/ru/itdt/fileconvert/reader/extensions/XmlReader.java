@@ -13,12 +13,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class XmlReader implements FileReader {
-    private final String path;
-
-    public XmlReader(String path) {
-        this.path = path;
-    }
+public record XmlReader(String path) implements FileReader {
 
     public List<Building> getData() throws FileNotFoundException, XMLStreamException {
         List<Building> buildings = new ArrayList<>();

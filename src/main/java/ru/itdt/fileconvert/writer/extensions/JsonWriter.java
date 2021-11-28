@@ -6,12 +6,7 @@ import ru.itdt.fileconvert.writer.FileWriter;
 import java.io.IOException;
 import java.util.List;
 
-public final class JsonWriter implements FileWriter {
-    private final String path;
-
-    public JsonWriter(String path) {
-        this.path = path;
-    }
+public record JsonWriter(String path) implements FileWriter {
 
     public void save(List<Building> buildings) throws IOException {
         com.google.gson.stream.JsonWriter jsonWriter;
