@@ -8,5 +8,5 @@ import java.io.IOException;
 import java.util.List;
 
 public interface FileWriter {
-    void save(List<Building> buildings) throws IOException, ParserConfigurationException, TransformerException;
+    void write(List<Building> buildings) throws IOException, ParserConfigurationException, TransformerException;
 }

@@ -4,7 +4,6 @@ import org.junit.BeforeClass;
 import ru.itdt.fileconvert.constructions.Building;
 import ru.itdt.fileconvert.reader.FileReader;
 import org.json.simple.parser.ParseException;
-import org.junit.Before;
 import org.junit.Test;
 import ru.itdt.fileconvert.reader.ReadFactory;
 
@@ -31,7 +30,7 @@ public class XmlTest {
         if(path == null) throw new NullPointerException("Файл не найден");
 
         file = new ReadFactory().openFile(URLDecoder.decode(path.getPath(), StandardCharsets.UTF_8));
-        buildings = new ArrayList<>(file.getData());
+        buildings = new ArrayList<>(file.read());
     }
 
     @Test

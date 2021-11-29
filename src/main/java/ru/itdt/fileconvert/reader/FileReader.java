@@ -8,5 +8,5 @@ import java.io.IOException;
 import java.util.List;
 
 public interface FileReader {
-    List<Building> getData() throws IOException, XMLStreamException, ParseException;
+    List<Building> read() throws IOException, XMLStreamException, ParseException;
 }

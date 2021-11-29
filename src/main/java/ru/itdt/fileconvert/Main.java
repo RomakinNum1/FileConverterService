@@ -20,7 +20,7 @@ public final class Main {
             FileReader reader = new ReadFactory().openFile(args[0]);
             FileWriter writer = new WriteFactory().saveFile(args[1]);
 
-            writer.save(reader.getData());
+            writer.write(reader.read());
 
             System.out.println("Файл " + args[1] + " создан");
         } catch (XMLStreamException | ParseException e) {

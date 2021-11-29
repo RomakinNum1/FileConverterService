@@ -13,7 +13,7 @@ import java.util.List;
 
 public record JsonReader(String path) implements FileReader {
 
-    public List<Building> getData() throws IOException, ParseException {
+    public List<Building> read() throws IOException, ParseException {
         JSONParser parser = new JSONParser();
         java.io.FileReader fileReader = new java.io.FileReader(path);
         JSONArray jsonBuild = (JSONArray) (((JSONObject) parser.parse(fileReader)).get("buildings"));

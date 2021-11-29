@@ -18,7 +18,7 @@ import java.util.List;
 
 public record XmlWriter(String path) implements FileWriter {
 
-    public void save(List<Building> buildings) throws ParserConfigurationException, TransformerException {
+    public void write(List<Building> buildings) throws ParserConfigurationException, TransformerException {
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dbuilder = dbFactory.newDocumentBuilder();
 

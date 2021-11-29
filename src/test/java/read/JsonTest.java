@@ -30,7 +30,7 @@ public class JsonTest {
         if(path == null) throw new NullPointerException("Файл не найден");
 
         file = new ReadFactory().openFile(URLDecoder.decode(path.getPath(), StandardCharsets.UTF_8));
-        buildings = new ArrayList<>(file.getData());
+        buildings = new ArrayList<>(file.read());
     }
 
     @Test

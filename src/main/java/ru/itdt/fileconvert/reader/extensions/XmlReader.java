@@ -15,7 +15,7 @@ import java.util.List;
 
 public record XmlReader(String path) implements FileReader {
 
-    public List<Building> getData() throws FileNotFoundException, XMLStreamException {
+    public List<Building> read() throws FileNotFoundException, XMLStreamException {
         List<Building> buildings = new ArrayList<>();
 
         XMLInputFactory factory = XMLInputFactory.newInstance();

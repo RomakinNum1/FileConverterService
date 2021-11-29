@@ -8,7 +8,7 @@ import java.util.List;
 
 public record JsonWriter(String path) implements FileWriter {
 
-    public void save(List<Building> buildings) throws IOException {
+    public void write(List<Building> buildings) throws IOException {
         com.google.gson.stream.JsonWriter jsonWriter;
         java.io.FileWriter fileWriter = new java.io.FileWriter(path);
         jsonWriter = new com.google.gson.stream.JsonWriter(fileWriter);
