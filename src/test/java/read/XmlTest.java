@@ -1,5 +1,6 @@
 package read;
 
+import org.junit.BeforeClass;
 import ru.itdt.fileconvert.constructions.Building;
 import ru.itdt.fileconvert.reader.FileReader;
 import org.json.simple.parser.ParseException;
@@ -9,6 +10,9 @@ import ru.itdt.fileconvert.reader.ReadFactory;
 
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
+import java.net.URL;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,13 +20,17 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 public class XmlTest {
-    FileReader file;
-    List<Building> buildings;
+    private static FileReader file;
+    private static List<Building> buildings;
 
-    @Before
-    public void openJson() throws XMLStreamException, IOException, ParseException {
-        String path = "src/test/resources/films.xml";
-        file = new ReadFactory().openFile(path);
+    @BeforeClass
+    public static void openXml() throws IOException, XMLStreamException, ParseException {
+        ClassLoader classLoader = JsonTest.class.getClassLoader();
+        URL path = classLoader.getResource("films.xml");
+
+        if(path == null) throw new NullPointerException("Файл не найден");
+
+        file = new ReadFactory().openFile(URLDecoder.decode(path.getPath(), StandardCharsets.UTF_8));
         buildings = new ArrayList<>(file.getData());
     }
 

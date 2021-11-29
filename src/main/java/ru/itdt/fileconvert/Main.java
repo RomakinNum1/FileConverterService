@@ -15,7 +15,7 @@ import java.io.IOException;
 public final class Main {
     public static void main(String[] args) {
         try {
-            if (args.length != 2) throw new IllegalArgumentException("Неверно указаны пути к файлам");
+            if (args.length != 2) throw new IllegalArgumentException("Неверно указаны пути к файлам\nНужно указать: <путь к исходному файлу> <путь к новому файлу>");
 
             FileReader reader = new ReadFactory().openFile(args[0]);
             FileWriter writer = new WriteFactory().saveFile(args[1]);
