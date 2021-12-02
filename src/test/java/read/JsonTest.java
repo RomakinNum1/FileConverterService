@@ -2,9 +2,9 @@ package read;
 
 import org.json.simple.parser.ParseException;
 import org.junit.BeforeClass;
-import ru.itdt.fileconvert.constructions.Building;
-import ru.itdt.fileconvert.reader.ReadFactory;
-import ru.itdt.fileconvert.reader.FileReader;
+import ru.itdt.fileconvert.services.constructions.Building;
+import ru.itdt.fileconvert.services.reader.ReadFactory;
+import ru.itdt.fileconvert.services.reader.FileRead;
 import org.junit.Test;
 
 import javax.xml.stream.XMLStreamException;
@@ -19,7 +19,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
 
 public class JsonTest {
-    private static FileReader file;
+    private static FileRead file;
     private static List<Building> buildings;
 
     @BeforeClass
@@ -29,8 +29,8 @@ public class JsonTest {
 
         if(path == null) throw new NullPointerException("Файл не найден");
 
-        file = new ReadFactory().openFile(URLDecoder.decode(path.getPath(), StandardCharsets.UTF_8));
-        buildings = new ArrayList<>(file.read());
+        file = new ReadFactory().getExtention(URLDecoder.decode(path.getPath(), StandardCharsets.UTF_8));
+        buildings = new ArrayList<>(file.read(URLDecoder.decode(path.getPath(), StandardCharsets.UTF_8)));
     }
 
     @Test

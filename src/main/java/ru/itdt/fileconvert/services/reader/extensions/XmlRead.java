@@ -1,7 +1,7 @@
-package ru.itdt.fileconvert.reader.extensions;
+package ru.itdt.fileconvert.services.reader.extensions;
 
-import ru.itdt.fileconvert.constructions.Building;
-import ru.itdt.fileconvert.reader.FileReader;
+import ru.itdt.fileconvert.services.constructions.Building;
+import ru.itdt.fileconvert.services.reader.FileRead;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
@@ -9,40 +9,37 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public record XmlReader(String path) implements FileReader {
-
-    public List<Building> read() throws FileNotFoundException, XMLStreamException {
+public final class XmlRead implements FileRead {
+    public List<Building> read(String path) throws IOException, XMLStreamException {
         List<Building> buildings = new ArrayList<>();
 
         XMLInputFactory factory = XMLInputFactory.newInstance();
-        XMLEventReader reader;
 
-        FileInputStream fileInputStream = new FileInputStream(path);
-        reader = factory.createXMLEventReader(fileInputStream);
-        XMLEvent xmlEvent;
+        try (FileInputStream fileInputStream = new FileInputStream(path)) {
+            XMLEventReader reader = factory.createXMLEventReader(fileInputStream);
+            XMLEvent xmlEvent = reader.nextEvent();
 
-        xmlEvent = reader.nextEvent();
-
-        if (reader.hasNext()) {
-            xmlEvent = reader.nextEvent();
-        }
-
-        while (!xmlEvent.isEndElement() || !xmlEvent.asEndElement().getName().getLocalPart().equals("buildings")) {
-            xmlEvent = reader.nextEvent();
-            if (xmlEvent.isStartElement()) {
-                StartElement startElement = xmlEvent.asStartElement();
-                String tagName = startElement.getName().getLocalPart();
-
-                if (tagName.equals("building"))
-                    buildings.add(getBuilding(reader));
+            if (reader.hasNext()) {
+                xmlEvent = reader.nextEvent();
             }
-        }
 
-        return buildings;
+            while (!xmlEvent.isEndElement() || !xmlEvent.asEndElement().getName().getLocalPart().equals("buildings")) {
+                xmlEvent = reader.nextEvent();
+                if (xmlEvent.isStartElement()) {
+                    StartElement startElement = xmlEvent.asStartElement();
+                    String tagName = startElement.getName().getLocalPart();
+
+                    if (tagName.equals("building"))
+                        buildings.add(getBuilding(reader));
+                }
+            }
+
+            return buildings;
+        }
     }
 
     private Building getBuilding(XMLEventReader reader) throws XMLStreamException {

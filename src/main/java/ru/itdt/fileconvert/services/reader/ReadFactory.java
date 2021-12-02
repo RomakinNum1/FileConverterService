@@ -1,19 +1,19 @@
-package ru.itdt.fileconvert.reader;
+package ru.itdt.fileconvert.services.reader;
 
-import ru.itdt.fileconvert.reader.extensions.JsonReader;
-import ru.itdt.fileconvert.reader.extensions.XmlReader;
+import ru.itdt.fileconvert.services.reader.extensions.JsonRead;
+import ru.itdt.fileconvert.services.reader.extensions.XmlRead;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.IOException;
 
 public final class ReadFactory {
-    public FileReader openFile(String path) throws IOException {
+    public FileRead getExtention(String path) throws IOException {
         switch (FilenameUtils.getExtension(path)) {
             case "xml" -> {
-                return new XmlReader(path);
+                return new XmlRead();
             }
             case "json" -> {
-                return new JsonReader(path);
+                return new JsonRead();
             }
             default -> throw new IOException("Данное расширение файла не может быть обработано");
         }

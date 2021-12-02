@@ -1,7 +1,7 @@
-package ru.itdt.fileconvert.writer.extensions;
+package ru.itdt.fileconvert.services.writer.extensions;
 
-import ru.itdt.fileconvert.constructions.Building;
-import ru.itdt.fileconvert.writer.FileWriter;
+import ru.itdt.fileconvert.services.constructions.Building;
+import ru.itdt.fileconvert.services.writer.FileWrite;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -16,9 +16,8 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.util.List;
 
-public record XmlWriter(String path) implements FileWriter {
-
-    public void write(List<Building> buildings) throws ParserConfigurationException, TransformerException {
+public final class XmlWrite implements FileWrite {
+    public void write(List<Building> buildings, String path) throws ParserConfigurationException, TransformerException {
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dbuilder = dbFactory.newDocumentBuilder();
 
@@ -42,9 +41,7 @@ public record XmlWriter(String path) implements FileWriter {
         }
 
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
-        Transformer transformer;
-
-        transformer = transformerFactory.newTransformer();
+        Transformer transformer = transformerFactory.newTransformer();
 
         DOMSource source = new DOMSource(document);
 
